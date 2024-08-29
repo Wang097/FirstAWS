@@ -11,8 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: List files in the root directory
-        run: ls -la  # 列出根目录中的文件和文件夹，确保frontend目录存在
+      - name: Show current working directory
+        run: pwd  # 显示当前工作目录
+
+      - name: List files in the current directory
+        run: ls -la  # 列出当前目录的文件和文件夹
+
+      - name: Navigate to frontend directory and list files
+        run: |
+          cd frontend
+          ls -la  # 列出frontend目录中的文件
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -29,23 +37,21 @@ jobs:
           cd frontend
           npm run build
 
-      - name: Archive production artifacts
-        run: |
-          cd frontend
-          tar -czf angular-app.tar.gz dist/
-        # 上传工件以供后续作业使用（可选）
-        # uses: actions/upload-artifact@v3
-        # with:
-        #   name: angular-artifact
-        #   path: frontend/angular-app.tar.gz
-
   backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: List files in the root directory
-        run: ls -la  # 列出根目录中的文件和文件夹，确保backend目录存在
+      - name: Show current working directory
+        run: pwd  # 显示当前工作目录
+
+      - name: List files in the current directory
+        run: ls -la  # 列出当前目录的文件和文件夹
+
+      - name: Navigate to backend directory and list files
+        run: |
+          cd backend
+          ls -la  # 列出backend目录中的文件
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v3
@@ -61,13 +67,3 @@ jobs:
         run: |
           cd backend
           dotnet build --configuration Release
-
-      - name: Publish .NET Core app
-        run: |
-          cd backend
-          dotnet publish --configuration Release --output ./publish
-        # 上传工件以供后续作业使用（可选）
-        # uses: actions/upload-artifact@v3
-        # with:
-        #   name: dotnet-artifact
-        #   path: backend/publish/
