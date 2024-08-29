@@ -10,18 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: List files in the root directory
+        run: ls -la  # 列出根目录中的文件和文件夹，确保frontend目录存在
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '14'
+
       - name: Install dependencies
         run: |
           cd frontend
           npm install
+
       - name: Build Angular app
         run: |
           cd frontend
           npm run build
+
       - name: Archive production artifacts
         run: |
           cd frontend
@@ -36,18 +43,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: List files in the root directory
+        run: ls -la  # 列出根目录中的文件和文件夹，确保backend目录存在
+
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.0.x'
+
       - name: Restore dependencies
         run: |
           cd backend
           dotnet restore
+
       - name: Build .NET Core app
         run: |
           cd backend
           dotnet build --configuration Release
+
       - name: Publish .NET Core app
         run: |
           cd backend
