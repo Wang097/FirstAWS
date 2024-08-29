@@ -1,0 +1,59 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+      - name: Build Angular app
+        run: |
+          cd frontend
+          npm run build
+      - name: Archive production artifacts
+        run: |
+          cd frontend
+          tar -czf angular-app.tar.gz dist/
+        # 上传工件以供后续作业使用（可选）
+        # uses: actions/upload-artifact@v3
+        # with:
+        #   name: angular-artifact
+        #   path: frontend/angular-app.tar.gz
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+      - name: Restore dependencies
+        run: |
+          cd backend
+          dotnet restore
+      - name: Build .NET Core app
+        run: |
+          cd backend
+          dotnet build --configuration Release
+      - name: Publish .NET Core app
+        run: |
+          cd backend
+          dotnet publish --configuration Release --output ./publish
+        # 上传工件以供后续作业使用（可选）
+        # uses: actions/upload-artifact@v3
+        # with:
+        #   name: dotnet-artifact
+        #   path: backend/publish/
